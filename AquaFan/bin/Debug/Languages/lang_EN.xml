@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Language>
+	<LanguageNode controlName="varCmdOK" text="Configuration complete."/>
+	<LanguageNode controlName="varCmdNotOK" text="AquaComputerCmd.exe could not be found."/>
+	<LanguageNode controlName="varSerialNotOK" text="No device serialnumber given."/>
+	<LanguageNode controlName="varOpenFileDialogTitle" text="Find AquaComputerCmd.exe"/>
+	<LanguageNode controlName="varOpenFileDialogFilter" text="AquaComputerCmd.exe|AquaComputerCmd.exe"/>	
+	<LanguageNode controlName="varMessageHeader" text="AquaFan"/>	
+	<LanguageNode controlName="varCmdNotExist" text="The given file does not exist."/>	
+	
+	<LanguageNode controlName="frmMain" text="AquaFan"/>
+	<LanguageNode controlName="tBtnFile" text="File"/>
+	<LanguageNode controlName="btnSave" text="Save"/>
+	<LanguageNode controlName="tBtnLanguage" text="Language"/>
+	<LanguageNode controlName="tBtnClose" text="Close"/>
+	<LanguageNode controlName="tBtnEdit" text="Edit"/>
+	<LanguageNode controlName="tBtnConfiguration" text="Configuration"/>
+	<LanguageNode controlName="lblAquacomputerPath" text="Path to AquaComputerCmd.exe:"/>
+	<LanguageNode controlName="lblDefaultLanguage" text="Language at program start:"/>
+	<LanguageNode controlName="btnSaveConfiguration" text="Save settings"/>
+	<LanguageNode controlName="frmConfiguration" text="Configuration"/>
+	<LanguageNode controlName="btnSelectAquacomputerPath" text="..."/>	
+	
+	<LanguageNode controlName="grpAqua" text="Aquaero/AquaComputerCmd configuration"/>
+	<LanguageNode controlName="lblDeviceSerial" text="Aquaero Geräte - serial number"/>
+		
+	<LanguageNode controlName="grpRgb" text="R-G-B Settings"/>
+	<LanguageNode controlName="grpFans" text="Fan settings"/>	
+	
+	<LanguageNode controlName="grpProgramConfig" text="Program configuration"/>
+	<LanguageNode controlName="chkSaveBeforeApply" text="Set fan speeds when the active profile is changed."/>
+	
+	<LanguageNode controlName="lblCurrentDescription" text="Current speed: []%"/>
+	
+	<LanguageNode controlName="btnAccept" text="Accept"/>
+	
+	<LanguageNode controlName="chkStartBoost" text="Startboost (2,5 Sek.)"/>
+	<LanguageNode controlName="rdbActive" text="Active"/>
+	
+	<LanguageNode controlName="btnSaveCurrentProfile" text="Active profile"/>
+	<LanguageNode controlName="btnSaveAllProfiles" text="All profiles (Strg + S)"/>
+	<LanguageNode controlName="btnSaveSelectedProfiles" text="Selected profiles"/>
+	
+	<LanguageNode controlName="frmNewProfile" text="Create new profil"/>
+	<LanguageNode controlName="btnCreateProfile" text="Create new profile"/>
+	<LanguageNode controlName="lblProfileName" text="Profile name:"/>
+	<LanguageNode controlName="btnCreate" text="Create profile"/>
+	
+	<LanguageNode controlName="varNoProgramConfig" text="The program configuration could not be found. Please redownload the software.\r\nThe program will now exit."/>
+	
+	<LanguageNode controlName="frmChangeProfileName" text="Change profile name"/>
+	<LanguageNode controlName="btnAcceptNewProfileName" text="Change profile name"/>
+	<LanguageNode controlName="lblChangeProfileName" text="New profilename"/>
+	
+	<LanguageNode controlName="cmsChangeProfileName" text="Change profile name"/>
+	<LanguageNode controlName="cmsDeleteProfile" text="Delete profile"/>
+	
+	<LanguageNode controlName="chkApplyChangesAtStartup" text="Apply active profile settings at program start"/>
+	<LanguageNode controlName="chkStartMinimized" text="Start program minimized"/>
+	<LanguageNode controlName="tBtnResize" text="Show"/>
+	
+	
+</Language>

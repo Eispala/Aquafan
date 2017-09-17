@@ -1,0 +1,14 @@
+<FanConfig active="False" profileName="100%" startboost="False">
+  <fan name="fan1" speed="100" description="" />
+  <fan name="fan2" speed="100" description="" />
+  <fan name="fan3" speed="100" description="" />
+  <fan name="fan4" speed="100" description="" />
+  <fan name="fan5" speed="0" description="" />
+  <fan name="fan6" speed="0" description="" />
+  <fan name="fan7" speed="0" description="" />
+  <fan name="fan8" speed="0" description="" />
+  <fan name="fan9" speed="0" description="" />
+  <fan name="fan10" speed="0" description="" />
+  <fan name="fan11" speed="0" description="" />
+  <fan name="fan12" speed="0" description="" />
+</FanConfig>
