@@ -207,14 +207,15 @@ namespace AquaFan
         {
             if (!XmlControllerObject.checkCmdPath)
             {
-                lblStatus.Text = lngCntrl.getVariableText(lngCntrl.CurrentLanguage, "varCmdNotOK");
+                lblStatus.Text = lngCntrl.getVariableText(lngCntrl.CurrentLanguage, "varCmdNotOK").Trim();
                 statusStrip.BackColor = Color.Orange;
                 btnAcceptFrmMain.Enabled = false;
                 return;
             }
-            else if (string.IsNullOrEmpty(DeviceSerial))
+
+            if (string.IsNullOrEmpty(DeviceSerial))
             {
-                lblStatus.Text = lngCntrl.getVariableText(lngCntrl.CurrentLanguage, "varSerialNotOK");
+                lblStatus.Text += " " + lngCntrl.getVariableText(lngCntrl.CurrentLanguage, "varSerialNotOK").Trim();
                 statusStrip.BackColor = Color.Orange;
                 btnAcceptFrmMain.Enabled = false;
                 return;
@@ -422,9 +423,11 @@ namespace AquaFan
                 if (bCurrent)
                 {
                     sReturnArguments += " -" + f.Name + ":" + f.SpeedPercentage.ToString();
+                    iProcessCounter = 1;
                 }
                 else
                 {
+                    iProcessCounter = 2;
                     sReturnArguments += " -" + f.Name + ":" + "100";
                 }
             }
@@ -440,7 +443,8 @@ namespace AquaFan
             ((System.Timers.Timer)sender).Stop();
         }
 
-        Process p = new Process();
+        Process pSetFanSpeeds = new Process();
+        int iProcessCounter = 0;
 
         /// <summary>
         /// Aktivierte die übergebenen Geschwindigkeiten für die Lüfter
@@ -448,11 +452,45 @@ namespace AquaFan
         /// <param name="startArguments"></param>
         private void applyFanSpeeds(string startArguments)
         {
-            p = new Process();
+            //iProcessCounter++;
+            pSetFanSpeeds = new Process();
 
             pApplyChangesStartInfo.Arguments = " -sn:" + xmlCntrl.DeviceSerial() + startArguments;
-            p.StartInfo = pApplyChangesStartInfo;
-            p.Start();
+            pSetFanSpeeds.StartInfo = pApplyChangesStartInfo;
+            pSetFanSpeeds.StartInfo.CreateNoWindow = true;
+            pSetFanSpeeds.StartInfo.UseShellExecute = false;
+            pSetFanSpeeds.EnableRaisingEvents = true;
+            pSetFanSpeeds.Exited += P_Exited;
+            pSetFanSpeeds.Start();
+        }
+
+        private void PSetFanSpeeds_Disposed(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        System.Timers.Timer tTest = new System.Timers.Timer(2000);
+
+        private void P_Exited(object sender, EventArgs e)
+        {
+            iProcessCounter--;
+            if(iProcessCounter-- <= 0)
+            {
+                tTest.Elapsed -= TTest_Elapsed;
+                tTest.Elapsed += TTest_Elapsed;
+                lblStatus.Text = lngCntrl.getVariableText(lngCntrl.CurrentLanguage, "varFanSpeedSet");
+                statusStrip.BackColor = Color.LightGreen;
+                btnAcceptFrmMain.Enabled = true;
+                tTest.Start();
+            }
+        }
+
+        private void TTest_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            lblStatus.Text = lngCntrl.getVariableText(lngCntrl.CurrentLanguage, "");
+            statusStrip.BackColor = Color.LightGreen;
+            btnAcceptFrmMain.Enabled = true;
+            tTest.Stop();
         }
 
         /// <summary>

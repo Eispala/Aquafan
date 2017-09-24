@@ -58,6 +58,6 @@
 	<LanguageNode controlName="chkApplyChangesAtStartup" text="Aktives Profil bei Programmstart aktivieren"/>
 	<LanguageNode controlName="chkStartMinimized" text="Programm minimiert starten"/>
 	<LanguageNode controlName="tBtnResize" text="Anzeigen"/>
-	
+	<LanguageNode controlName="varFanSpeedSet" text="Geschwindigkeiten wurden übernommen"/>
 	
 </Language>

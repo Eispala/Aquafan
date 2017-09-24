@@ -123,7 +123,8 @@ namespace AquaFan
                 }
                 else
                 {
-                    return "Text " + variableName + " nicht gefunden";
+                    return "";
+                    //return "Text " + variableName + " nicht gefunden";
                 }
             }
             else
