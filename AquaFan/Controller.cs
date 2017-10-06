@@ -84,22 +84,22 @@ namespace AquaFan
         }
 
         //Aktuelles Menustrip
-        private MenuStrip menuStripCurrent;
+        //private MenuStrip menuStripCurrent;
 
-        public MenuStrip CurrentMenuStrip
-        {
-            get { return menuStripCurrent; }
-            set { menuStripCurrent = value; }
-        }
+        //public MenuStrip CurrentMenuStrip
+        //{
+        //    get { return menuStripCurrent; }
+        //    set { menuStripCurrent = value; }
+        //}
 
         //Aktuell aktive Form
-        private Form frmCurrent;
+        //private Form frmCurrent;
 
-        public Form CurrentForm
-        {
-            get { return frmCurrent; }
-            set { frmCurrent = value; }
-        }
+        //public Form CurrentForm
+        //{
+        //    get { return frmCurrent; }
+        //    set { frmCurrent = value; }
+        //}
 
 
         //Liste mit allen Profilen (TabPages)
@@ -166,12 +166,12 @@ namespace AquaFan
 
         #endregion
 
-        public Controller(ToolStripStatusLabel _lblStatus, ToolStripMenuItem _languageMenuItem, Form _frmMain, StatusStrip _statusStrip, MenuStrip _menuStrip, Button acceptButton, TabControl tbCntrl)
+        public Controller(ToolStripStatusLabel _lblStatus, ToolStripMenuItem _languageMenuItem, StatusStrip _statusStrip, Button acceptButton, TabControl tbCntrl)
         {
             lblStatus = _lblStatus;
             statusStrip = _statusStrip;
-            menuStripCurrent = _menuStrip;
-            frmCurrent = _frmMain;
+            //menuStripCurrent = _menuStrip;
+            //frmCurrent = _frmMain;
             btnAcceptFrmMain = acceptButton;
             ProfileTabControl = tbCntrl;
 
@@ -180,7 +180,7 @@ namespace AquaFan
 
             //Controller Objekte instanziieren
             xmlCntrl = new xmlController(this);
-            lngCntrl = new LanguageController(this, XmlControllerObject, _languageMenuItem, _frmMain, menuStripCurrent);
+            lngCntrl = new LanguageController(this, XmlControllerObject, _languageMenuItem);
 
             XmlControllerObject.DeviceSerial();
 
@@ -190,7 +190,7 @@ namespace AquaFan
             bApplyChangesWhenChangingProfile = XmlControllerObject.changeFanSpeedsByChangingProfile;
 
             loadProfiles();
-            showProfiles();
+            //showProfiles();
 
             if (XmlControllerObject.ApplyValuesAtProgramStart)
             {
@@ -496,7 +496,7 @@ namespace AquaFan
         /// <summary>
         /// Erstellt ein leeres Profil
         /// </summary>
-        public bool createProfile()
+        public bool createDefaultProfile()
         {
             foreach (Profile p in Profiles)
             {
@@ -572,17 +572,11 @@ namespace AquaFan
             }
         }
 
-        public void createProfileWrapper(Form f)
+        public void createFanProfile(Form f, MenuStrip menu)
         {
-            if (createProfile())
-            {
-                CurrentForm = f;
-                showProfiles();
-            }
-            else
-            {
-                reloadCurrentLanguage(f);
-            }
+            createDefaultProfile();
+            showProfiles();
+            reloadCurrentLanguage(f, menu);
         }
 
         /// <summary>
@@ -644,14 +638,14 @@ namespace AquaFan
             }
 
             //Sprache aendern nachdem alle Controls hinzugefuegt wurden
-            LanguageControllerObject.collectControls(null, menuStripCurrent);
-            LanguageControllerObject.changeLanguage(LanguageControllerObject.CurrentLanguage);
+            //LanguageControllerObject.collectControls(null, menuStripCurrent);
+            //LanguageControllerObject.changeLanguage(LanguageControllerObject.CurrentLanguage);
         }
 
-        public void reloadCurrentLanguage(Form f)
+        public void reloadCurrentLanguage(Form f, MenuStrip menu)
         {
             //Sprache aendern nachdem alle Controls hinzugefuegt wurden
-            LanguageControllerObject.collectControls(f, menuStripCurrent);
+            LanguageControllerObject.collectControls(f, menu);
             LanguageControllerObject.changeLanguage(LanguageControllerObject.CurrentLanguage);
         }
 
@@ -699,15 +693,16 @@ namespace AquaFan
         /// <summary>
         /// Resized die aktuelle Form auf den Normal State
         /// </summary>
-        public void restoreFormSize()
+        public void restoreFormSize(Form frm)
         {
-            if (CurrentForm.WindowState == FormWindowState.Normal | CurrentForm.WindowState == FormWindowState.Minimized)
+            if (frm.WindowState == FormWindowState.Normal | frm.WindowState == FormWindowState.Minimized)
             {
-                CurrentForm.ShowInTaskbar = true;
+                frm.ShowInTaskbar = true;
 
-                if (CurrentForm.WindowState == FormWindowState.Minimized)
+                if (frm.WindowState == FormWindowState.Minimized)
                 {
-                    ShowWindow(CurrentForm.Handle, SW_RESTORE);
+                    ShowWindow(frm.Handle, SW_RESTORE);
+
                 }
             }
         }

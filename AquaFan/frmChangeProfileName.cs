@@ -47,7 +47,7 @@ namespace AquaFan
 
         private void frmChangeProfileName_Load(object sender, EventArgs e)
         {
-            ParentControllerObject.CurrentForm = this;
+            //ParentControllerObject.CurrentForm = this;
             ParentControllerObject.LanguageControllerObject.collectControls(this);
             ParentControllerObject.LanguageControllerObject.changeLanguage(ParentControllerObject.LanguageControllerObject.CurrentLanguage);
         }

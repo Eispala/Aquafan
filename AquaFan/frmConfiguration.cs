@@ -45,8 +45,10 @@ namespace AquaFan
             }
 
             //Sprache anpassen
-            cntrl.CurrentForm = this;
-            cntrl.LanguageControllerObject.collectControls();
+            //cntrl.CurrentForm = this;
+
+            //Hier gibts kein Menustrip
+            cntrl.LanguageControllerObject.collectControls(this, null);
             cntrl.LanguageControllerObject.changeLanguage(cntrl.LanguageControllerObject.CurrentLanguage);
 
             //AquaComputerCmd Pfad setzen

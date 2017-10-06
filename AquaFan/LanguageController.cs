@@ -38,13 +38,12 @@ namespace AquaFan
         }
 
 
-        public LanguageController(Controller cntrlPrnt, xmlController _xmlCntrl, ToolStripMenuItem _languageMenuItem, Form _frmMain, MenuStrip _menuStrip)
+        public LanguageController(Controller cntrlPrnt, xmlController _xmlCntrl, ToolStripMenuItem _languageMenuItem)
         {
             sLanguageFolder = Application.StartupPath + "\\Languages\\";
             cntrl = cntrlPrnt;
             xmlCntrl = _xmlCntrl;
             languageMenu = _languageMenuItem;
-            collectControls(cntrl.CurrentForm, cntrl.CurrentMenuStrip);
             getAvailableLanguages();
         }
 
@@ -63,12 +62,16 @@ namespace AquaFan
             }
         }
 
+        public event EventHandler LanguageChanged;
+        public delegate void EventHandler(string sChosenLanguage);
+
         void languageItem_Click(object sender, EventArgs e)
         {
-            collectControls(cntrl.CurrentForm, cntrl.CurrentMenuStrip);
-            changeLanguage(((ToolStripMenuItem)sender).Text);
-            //Status mit neuer Sprache setzen
-            cntrl.setStatus();
+            LanguageChanged(((ToolStripMenuItem)sender).Text);
+            //collectControls(cntrl.CurrentForm, cntrl.CurrentMenuStrip);
+            //changeLanguage(((ToolStripMenuItem)sender).Text);
+            ////Status mit neuer Sprache setzen
+            //cntrl.setStatus();
         }
 
         /// <summary>
@@ -77,6 +80,7 @@ namespace AquaFan
         /// <param name="parentControl"></param>
         private void getControls(Control parentControl)
         {
+            if(parentControl == null) { return; }
             if (!lControls.Contains(parentControl))
                 lControls.Add(parentControl);
 
@@ -142,11 +146,11 @@ namespace AquaFan
         public void collectControls(Form frm = null, MenuStrip menu = null)
         {
             lControls.Clear();
-            if (frm == null) { getControls(cntrl.CurrentForm); }
-            else 
-            {
+            //if (frm == null) { getControls(cntrl.CurrentForm); }
+            //else 
+            //{
                 getControls(frm);
-            }
+            //}
 
             if(menu == null) { return; }
 

@@ -24,7 +24,7 @@ namespace AquaFan
         private void Form1_Load(object sender, EventArgs e)
         {
             bLoading = true;
-            cntrl = new Controller(lblStatus, tBtnLanguage, this, statusStrip1, menuStrip1, btnAccept, tabProfiles);
+            cntrl = new Controller(lblStatus, tBtnLanguage, statusStrip1, btnAccept, tabProfiles);
             bLoading = false;
 
             if(cntrl.XmlControllerObject.StartMinimizedValue)
@@ -35,6 +35,17 @@ namespace AquaFan
             {
                 WindowState = FormWindowState.Normal;
             }
+
+            cntrl.showProfiles();
+            cntrl.reloadCurrentLanguage(this, menuStrip1);
+            cntrl.LanguageControllerObject.LanguageChanged += LanguageControllerObject_LanguageChanged;
+        }
+
+        private void LanguageControllerObject_LanguageChanged(string sChosenLanguage)
+        {
+            cntrl.LanguageControllerObject.CurrentLanguage = sChosenLanguage;
+            cntrl.reloadCurrentLanguage(this, menuStrip1);
+            cntrl.setStatus();
         }
 
         private void ProfilePage_Click(object sender, EventArgs e)
@@ -68,7 +79,7 @@ namespace AquaFan
             if(((Profile)((TabControl)sender).TabPages[((TabControl)sender).SelectedIndex]).IsAddProfileTab)
             {
 
-                cntrl.createProfileWrapper(this);
+                cntrl.createFanProfile(this, menuStrip1);
 
             }
             else
@@ -91,17 +102,20 @@ namespace AquaFan
             cntrl.saveAllProfiles();
             cntrl.loadProfiles();
             cntrl.showProfiles();
+            cntrl.reloadCurrentLanguage(this, menuStrip1);
+            //cntrl.LanguageControllerObject.collectControls(this, menuStrip1);
+            //cntrl.LanguageControllerObject.changeLanguage(cntrl.LanguageControllerObject.CurrentLanguage);
         }        
 
         private void btnCreateProfile_Click(object sender, EventArgs e)
         {
-            cntrl.createProfileWrapper(this);
+            cntrl.createFanProfile(this, menuStrip1);
         }
 
         private void tabPage1_Click(object sender, EventArgs e)
         {
 
-            cntrl.createProfileWrapper(this);
+            cntrl.createFanProfile(this, menuStrip1);
 
         }
 
@@ -110,7 +124,7 @@ namespace AquaFan
             switch(keyData)
             {
                 case Keys.Control | Keys.T:
-                    cntrl.createProfileWrapper(this);
+                    cntrl.createFanProfile(this, menuStrip1);
 
                     return true;
                 case Keys.Control | Keys.S:
@@ -134,6 +148,12 @@ namespace AquaFan
         }
 
         bool bDoubleClickedAddProfileTab = false;
+
+        /// <summary>
+        /// Zeigt den Dialog zum aendern des Profilnamens an
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void tabProfiles_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             bDoubleClickedAddProfileTab = false;
@@ -154,9 +174,10 @@ namespace AquaFan
             if (bDoubleClickedAddProfileTab) { return; }
             
             cntrl.changeProfileName();
-            cntrl.CurrentForm = this;
-            cntrl.LanguageControllerObject.collectControls();
-            cntrl.LanguageControllerObject.changeLanguage(cntrl.LanguageControllerObject.CurrentLanguage);
+            //cntrl.CurrentForm = this;
+            cntrl.reloadCurrentLanguage(this, menuStrip1);
+            //cntrl.LanguageControllerObject.collectControls(this, menuStrip1);
+            //cntrl.LanguageControllerObject.changeLanguage(cntrl.LanguageControllerObject.CurrentLanguage);
 
         }
 
@@ -243,8 +264,8 @@ namespace AquaFan
 
         private void NotifyIconResizeClick(object sender, EventArgs e)
         {
-            cntrl.CurrentForm = this;
-            cntrl.restoreFormSize();
+            //cntrl.CurrentForm = this;
+            cntrl.restoreFormSize(this);
         }
 
         private void NotifyIconCloseClick(object sender, EventArgs e)
@@ -268,8 +289,8 @@ namespace AquaFan
 
         private void icon_DoubleClick(object sender, EventArgs e)
         {
-            cntrl.CurrentForm = this;
-            cntrl.restoreFormSize();
+            //cntrl.CurrentForm = this;
+            cntrl.restoreFormSize(this);
         }
 
         private void tabProfiles_Click(object sender, EventArgs e)
@@ -277,7 +298,7 @@ namespace AquaFan
             if(tabProfiles.TabPages.Count == 1)
             {
                 //Nur das Add-Profil ist vorhanden
-                cntrl.createProfileWrapper(this);
+                cntrl.createFanProfile(this, menuStrip1);
             }
         }
 
