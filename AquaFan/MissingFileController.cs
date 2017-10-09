@@ -12,8 +12,10 @@ namespace AquaFan
     /// </summary>
     public class MissingFileController
     {
-        public MissingFileController()
+        Controller ParentControllerObject;
+        public MissingFileController(Controller cntrl)
         {
+            ParentControllerObject = cntrl;
             getMissingFiles();
         }
 
@@ -26,9 +28,9 @@ namespace AquaFan
             //Die Nachrichten sind hardcoded, weil man sich ja nicht darauf verlassen kann dass Dateien die die Fehlermeldung enthalten vorhanden sind
             sErrorMessage = "The following default are missing:\r\n";
             
-            sProgramFiles[0] = "Config\\ProgramConfig.xml";
-            sProgramFiles[1] = "Languages\\lang_DE.xml";
-            sProgramFiles[2] = "Languages\\lang_EN.xml";
+            sProgramFiles[0] = ParentControllerObject.GetApplicationPath() + "\\Config\\ProgramConfig.xml";
+            sProgramFiles[1] = ParentControllerObject.GetApplicationPath() + "\\Languages\\lang_DE.xml";
+            sProgramFiles[2] = ParentControllerObject.GetApplicationPath() + "\\Languages\\lang_EN.xml";
             
             foreach(string s in sProgramFiles)
             {

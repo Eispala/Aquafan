@@ -235,7 +235,7 @@ namespace AquaFan
         {
             if (ParentControllerObject != null)
             {
-                ParentControllerObject.activateProfile(this);
+                ParentControllerObject.ActivateProfile(this);
             }
 
             ParentControllerObject.AcceptButtonFrmMain.Enabled = this.IsActiveProfile;
@@ -245,7 +245,7 @@ namespace AquaFan
         {
             if(ParentControllerObject == null) { return; }
             ProfileCurrentFan.SpeedPercentage = ((TrackBar)sender).Value;
-            ProfileLabel.Text = ParentControllerObject.LanguageControllerObject.getVariableText(ParentControllerObject.LanguageControllerObject.CurrentLanguage, "lblCurrentDescription").Replace("[]", ((TrackBar)sender).Value.ToString());
+            ProfileLabel.Text = ParentControllerObject.LanguageControllerObject.GetVariableText(ParentControllerObject.LanguageControllerObject.CurrentLanguage, "lblCurrentDescription").Replace("[]", ((TrackBar)sender).Value.ToString());
         }
 
         private void CbProfileTabComboBox_SelectedValueChanged(object sender, EventArgs e)

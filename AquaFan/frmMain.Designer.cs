@@ -208,7 +208,7 @@
             this.icon.Icon = ((System.Drawing.Icon)(resources.GetObject("icon.Icon")));
             this.icon.Text = "AquaFan";
             this.icon.Visible = true;
-            this.icon.Click += new System.EventHandler(this.icon_Click);
+            this.icon.Click += new System.EventHandler(this.Icon_Click);
             this.icon.DoubleClick += new System.EventHandler(this.icon_DoubleClick);
             // 
             // richTextBox1

@@ -59,5 +59,5 @@
 	<LanguageNode controlName="chkStartMinimized" text="Start program minimized"/>
 	<LanguageNode controlName="tBtnResize" text="Show"/>
 	
-	
+	<LanguageNode controlName="chkStartWithWindows" text="Run program when Windows boots"/>
 </Language>

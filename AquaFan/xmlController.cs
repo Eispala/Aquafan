@@ -49,7 +49,7 @@ namespace AquaFan
         public xmlController(Controller prntController)
         {
             ParentControllerObject = prntController;
-            xmlDocProgramConfig.Load(sProgramConfigPath);
+            xmlDocProgramConfig.Load(parentController.GetApplicationPath() + "\\" + sProgramConfigPath);
             sXmlHash = xmlDocProgramConfig.DocumentElement.Attributes["identifier"].Value.ToString();
 
             xmlNodeCmdPath = xmlDocProgramConfig.SelectSingleNode(sProgramConfigRoot + "//CommandLineConfig//AquaComputerCmdPath");
@@ -125,7 +125,7 @@ namespace AquaFan
             if(xmlNodeApplyAtStart != null)
             {
                 xmlNodeApplyAtStart.Attributes["value"].Value = value.ToString();
-                xmlDocProgramConfig.Save(sProgramConfigPath);
+                xmlDocProgramConfig.Save(parentController.GetApplicationPath() + "\\" + sProgramConfigPath);
             }
         }
 
@@ -135,7 +135,7 @@ namespace AquaFan
             if(xmlNodeStartMinimized != null)
             {
                 xmlNodeStartMinimized.Attributes["value"].Value = value.ToString();
-                xmlDocProgramConfig.Save(sProgramConfigPath);
+                xmlDocProgramConfig.Save(parentController.GetApplicationPath() + "\\" + sProgramConfigPath);
             }
         }
 
@@ -204,7 +204,7 @@ namespace AquaFan
             }
 
             xmlNodeLanguage.Attributes["selectedLanguage"].Value = language;
-            xmlDocProgramConfig.Save(sProgramConfigPath);
+            xmlDocProgramConfig.Save(parentController.GetApplicationPath() + "\\" + sProgramConfigPath);
         }
 
         /// <summary>
@@ -215,7 +215,7 @@ namespace AquaFan
         {
             xmlNodeCmdPath.Attributes["value"].Value = path;
 
-            xmlDocProgramConfig.Save(sProgramConfigPath);
+            xmlDocProgramConfig.Save(parentController.GetApplicationPath() + "\\" + sProgramConfigPath);
             CmdPath = path;
         }
 
@@ -252,7 +252,7 @@ namespace AquaFan
 
             xmlNodeDeviceSerial.Attributes["value"].Value = serial;
             ParentControllerObject.DeviceSerial = serial;
-            xmlDocProgramConfig.Save(sProgramConfigPath);
+            xmlDocProgramConfig.Save(parentController.GetApplicationPath() + "\\" + sProgramConfigPath);
 
         }
 
@@ -289,7 +289,7 @@ namespace AquaFan
             }
 
             xmlNodeChangeFanSpeedsByActiveProfile.Attributes["value"].Value = value.ToString();
-            xmlDocProgramConfig.Save(sProgramConfigPath);
+            xmlDocProgramConfig.Save(parentController.GetApplicationPath() + "\\" + sProgramConfigPath);
         }
 
         /// <summary>
@@ -344,7 +344,7 @@ namespace AquaFan
 
             BindingList<Profile> lReturningProfiles = new BindingList<Profile>();
 
-            foreach (string sProfilePath in Directory.GetFiles("FanProfiles"))
+            foreach (string sProfilePath in Directory.GetFiles(ParentControllerObject.GetApplicationPath() + "\\FanProfiles"))
             {
                 xmlDocFanConfig.RemoveAll();
                 xmlDocFanConfig.Load(sProfilePath);
@@ -365,7 +365,10 @@ namespace AquaFan
                 p.IsActiveProfile = Convert.ToBoolean(xmlDocFanConfig.DocumentElement.Attributes["active"].Value);
                 p.ProfileRadioButton.Checked = p.IsActiveProfile;
 
-                if(p.IsActiveProfile) { ParentControllerObject.CurrentProfile = p; }
+                if (p.IsActiveProfile)
+                {
+                    ParentControllerObject.CurrentProfile = p;
+                }
 
                 BindingList<fan> lFans = loadFanDataFromFile(sProfilePath);
                 p.ProfileFans = lFans;
@@ -374,10 +377,12 @@ namespace AquaFan
             }
 
             Profile addProfile = new Profile("+ (Strg + T)", ParentControllerObject);
-            addProfile.ProfileFans = ParentControllerObject.generateFans();
+            addProfile.ProfileFans = ParentControllerObject.GenerateFans();
             addProfile.ProfileCurrentFan = addProfile.ProfileFans[0];
-            addProfile.ProfileLabel.Text = ParentControllerObject.getCurrentSpeedText(addProfile.ProfileCurrentFan.SpeedPercentage);
+            addProfile.ProfileLabel.Text = ParentControllerObject.GetCurrentSpeedText(addProfile.ProfileCurrentFan.SpeedPercentage);
             addProfile.IsAddProfileTab = true;
+
+            
 
             lReturningProfiles.Add(addProfile);
             return lReturningProfiles;

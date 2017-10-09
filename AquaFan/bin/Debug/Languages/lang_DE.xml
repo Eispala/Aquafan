@@ -59,5 +59,7 @@
 	<LanguageNode controlName="chkStartMinimized" text="Programm minimiert starten"/>
 	<LanguageNode controlName="tBtnResize" text="Anzeigen"/>
 	<LanguageNode controlName="varFanSpeedSet" text="Geschwindigkeiten wurden übernommen"/>
+
+	<LanguageNode controlName="chkStartWithWindows" text="Programm beim Start von Windows ausführen"/>
 	
 </Language>

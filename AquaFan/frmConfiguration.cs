@@ -48,8 +48,8 @@ namespace AquaFan
             //cntrl.CurrentForm = this;
 
             //Hier gibts kein Menustrip
-            cntrl.LanguageControllerObject.collectControls(this, null);
-            cntrl.LanguageControllerObject.changeLanguage(cntrl.LanguageControllerObject.CurrentLanguage);
+            cntrl.LanguageControllerObject.CollectControls(this, null);
+            cntrl.LanguageControllerObject.ChangeLanguage(cntrl.LanguageControllerObject.CurrentLanguage);
 
             //AquaComputerCmd Pfad setzen
             tbAquaComputerCmdPath.Text = cntrl.XmlControllerObject.CmdPath;
@@ -65,6 +65,8 @@ namespace AquaFan
 
             //Programm minimiert starten
             chkStartMinimized.Checked = cntrl.XmlControllerObject.StartMinimizedValue;
+
+            chkStartWithWindows.Checked = cntrl.StartWithWindowsEnabled();
         }
 
         /// <summary>
@@ -74,7 +76,7 @@ namespace AquaFan
         /// <param name="e"></param>
         private void btnSelectAquacomputerPath_Click(object sender, EventArgs e)
         {
-            tbAquaComputerCmdPath.Text = cntrl.setAquacomputerCmdPath(tbAquaComputerCmdPath.Text);
+            tbAquaComputerCmdPath.Text = cntrl.SetAquacomputerCMDPath(tbAquaComputerCmdPath.Text);
         }
 
         /// <summary>
@@ -91,7 +93,12 @@ namespace AquaFan
             cntrl.ApplyChangesWhenChangingActiveProfile = chkSaveBeforeApply.Checked;
             cntrl.XmlControllerObject.setApplyChangesAtActiveProfile(chkApplyChangesAtStartup.Checked);
             cntrl.XmlControllerObject.setStartMinimizedValue(chkStartMinimized.Checked);
-            cntrl.setStatus();
+            cntrl.SetStatus();
+        }
+
+        private void chkStartWithWindows_CheckedChanged(object sender, EventArgs e)
+        {
+            ControllerObject.SetStartWithWindows(((CheckBox)sender).Checked);
         }
     }
 }

@@ -44,13 +44,13 @@ namespace AquaFan
             cntrl = cntrlPrnt;
             xmlCntrl = _xmlCntrl;
             languageMenu = _languageMenuItem;
-            getAvailableLanguages();
+            GetAvailableLanguages();
         }
 
         /// <summary>
         /// Liest alle Sprachdateien im Programmordner ein und erstellt ein ToolStripMenuItem dafür
         /// </summary>
-        private void getAvailableLanguages()
+        private void GetAvailableLanguages()
         {
             foreach (string s in Directory.GetFiles(sLanguageFolder, "lang_*.xml"))
             {
@@ -78,7 +78,7 @@ namespace AquaFan
         /// Fuegt alle Untercontrols des uebergebenen Controls in die Liste von Controls ein
         /// </summary>
         /// <param name="parentControl"></param>
-        private void getControls(Control parentControl)
+        private void GetControls(Control parentControl)
         {
             if(parentControl == null) { return; }
             if (!lControls.Contains(parentControl))
@@ -88,7 +88,7 @@ namespace AquaFan
             {
                 foreach (Control subControl in parentControl.Controls)
                 {
-                    getControls(subControl);
+                    GetControls(subControl);
                 }
             }
         }
@@ -97,7 +97,7 @@ namespace AquaFan
         /// Fuegt alle Buttons eines Menues in die Liste von Controls ein
         /// </summary>
         /// <param name="parentButton"></param>
-        private void getMenuItems(ToolStripMenuItem parentButton)
+        private void GetMenuItems(ToolStripMenuItem parentButton)
         {
             if (!lControls.Contains(parentButton))
                 lControls.Add(parentButton);
@@ -106,7 +106,7 @@ namespace AquaFan
             {
                 foreach (ToolStripMenuItem childButton in parentButton.DropDownItems)
                 {
-                    getMenuItems(childButton);
+                    GetMenuItems(childButton);
                 }
             }
         }
@@ -117,7 +117,7 @@ namespace AquaFan
         /// <param name="language"></param>
         /// <param name="variableName"></param>
         /// <returns></returns>
-        public string getVariableText(string language, string variableName)
+        public string GetVariableText(string language, string variableName)
         {
             if(dLanguages.ContainsKey(language))
             {
@@ -143,20 +143,20 @@ namespace AquaFan
         /// </summary>
         /// <param name="frm"></param>
         /// <param name="menu"></param>
-        public void collectControls(Form frm = null, MenuStrip menu = null)
+        public void CollectControls(Form frm = null, MenuStrip menu = null)
         {
             lControls.Clear();
             //if (frm == null) { getControls(cntrl.CurrentForm); }
             //else 
             //{
-                getControls(frm);
+                GetControls(frm);
             //}
 
             if(menu == null) { return; }
 
             foreach (ToolStripMenuItem menuEntry in menu.Items)
             {
-                getMenuItems(menuEntry);
+                GetMenuItems(menuEntry);
             }
         }
 
@@ -164,7 +164,7 @@ namespace AquaFan
         /// Ädert die Sprache auf die Übergebene
         /// </summary>
         /// <param name="language"></param>
-        public void changeLanguage(string language)
+        public void ChangeLanguage(string language)
         {
             /*
              * Schleife ueber alle Controls

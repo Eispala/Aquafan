@@ -5,6 +5,6 @@
   </CommandLineConfig>
   <Language selectedLanguage="DE" />
   <ChangeFanSpeedsByActiveProfile value="False" />
-  <ApplyActiveProfileAtProgramStart value="False" />
-  <StartMinimized value="False" />
+  <ApplyActiveProfileAtProgramStart value="True" />
+  <StartMinimized value="True" />
 </ProgramConfig>

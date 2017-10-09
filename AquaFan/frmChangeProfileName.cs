@@ -47,9 +47,8 @@ namespace AquaFan
 
         private void frmChangeProfileName_Load(object sender, EventArgs e)
         {
-            //ParentControllerObject.CurrentForm = this;
-            ParentControllerObject.LanguageControllerObject.collectControls(this);
-            ParentControllerObject.LanguageControllerObject.changeLanguage(ParentControllerObject.LanguageControllerObject.CurrentLanguage);
+            ParentControllerObject.LanguageControllerObject.CollectControls(this);
+            ParentControllerObject.LanguageControllerObject.ChangeLanguage(ParentControllerObject.LanguageControllerObject.CurrentLanguage);
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)

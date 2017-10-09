@@ -38,9 +38,10 @@
             this.lblDeviceSerial = new System.Windows.Forms.Label();
             this.grpAqua = new System.Windows.Forms.GroupBox();
             this.grpProgramConfig = new System.Windows.Forms.GroupBox();
+            this.chkStartMinimized = new System.Windows.Forms.CheckBox();
             this.chkApplyChangesAtStartup = new System.Windows.Forms.CheckBox();
             this.chkSaveBeforeApply = new System.Windows.Forms.CheckBox();
-            this.chkStartMinimized = new System.Windows.Forms.CheckBox();
+            this.chkStartWithWindows = new System.Windows.Forms.CheckBox();
             this.grpAqua.SuspendLayout();
             this.grpProgramConfig.SuspendLayout();
             this.SuspendLayout();
@@ -93,7 +94,7 @@
             // btnSaveConfiguration
             // 
             this.btnSaveConfiguration.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnSaveConfiguration.Location = new System.Drawing.Point(529, 304);
+            this.btnSaveConfiguration.Location = new System.Drawing.Point(529, 325);
             this.btnSaveConfiguration.Name = "btnSaveConfiguration";
             this.btnSaveConfiguration.Size = new System.Drawing.Size(189, 23);
             this.btnSaveConfiguration.TabIndex = 5;
@@ -133,6 +134,7 @@
             // 
             // grpProgramConfig
             // 
+            this.grpProgramConfig.Controls.Add(this.chkStartWithWindows);
             this.grpProgramConfig.Controls.Add(this.chkStartMinimized);
             this.grpProgramConfig.Controls.Add(this.chkApplyChangesAtStartup);
             this.grpProgramConfig.Controls.Add(this.chkSaveBeforeApply);
@@ -140,9 +142,19 @@
             this.grpProgramConfig.Controls.Add(this.cbLanguages);
             this.grpProgramConfig.Location = new System.Drawing.Point(12, 145);
             this.grpProgramConfig.Name = "grpProgramConfig";
-            this.grpProgramConfig.Size = new System.Drawing.Size(706, 153);
+            this.grpProgramConfig.Size = new System.Drawing.Size(706, 174);
             this.grpProgramConfig.TabIndex = 9;
             this.grpProgramConfig.TabStop = false;
+            // 
+            // chkStartMinimized
+            // 
+            this.chkStartMinimized.AutoSize = true;
+            this.chkStartMinimized.Location = new System.Drawing.Point(6, 119);
+            this.chkStartMinimized.Name = "chkStartMinimized";
+            this.chkStartMinimized.Size = new System.Drawing.Size(112, 17);
+            this.chkStartMinimized.TabIndex = 7;
+            this.chkStartMinimized.Text = "chkStartMinimized";
+            this.chkStartMinimized.UseVisualStyleBackColor = true;
             // 
             // chkApplyChangesAtStartup
             // 
@@ -159,26 +171,27 @@
             this.chkSaveBeforeApply.AutoSize = true;
             this.chkSaveBeforeApply.Location = new System.Drawing.Point(6, 72);
             this.chkSaveBeforeApply.Name = "chkSaveBeforeApply";
-            this.chkSaveBeforeApply.Size = new System.Drawing.Size(80, 17);
+            this.chkSaveBeforeApply.Size = new System.Drawing.Size(126, 17);
             this.chkSaveBeforeApply.TabIndex = 5;
-            this.chkSaveBeforeApply.Text = "checkBox1";
+            this.chkSaveBeforeApply.Text = "chkSaveBeforeApply";
             this.chkSaveBeforeApply.UseVisualStyleBackColor = true;
             // 
-            // chkStartMinimized
+            // chkStartWithWindows
             // 
-            this.chkStartMinimized.AutoSize = true;
-            this.chkStartMinimized.Location = new System.Drawing.Point(6, 119);
-            this.chkStartMinimized.Name = "chkStartMinimized";
-            this.chkStartMinimized.Size = new System.Drawing.Size(112, 17);
-            this.chkStartMinimized.TabIndex = 7;
-            this.chkStartMinimized.Text = "chkStartMinimized";
-            this.chkStartMinimized.UseVisualStyleBackColor = true;
+            this.chkStartWithWindows.AutoSize = true;
+            this.chkStartWithWindows.Location = new System.Drawing.Point(6, 142);
+            this.chkStartWithWindows.Name = "chkStartWithWindows";
+            this.chkStartWithWindows.Size = new System.Drawing.Size(132, 17);
+            this.chkStartWithWindows.TabIndex = 8;
+            this.chkStartWithWindows.Text = "chkStartWithWindows";
+            this.chkStartWithWindows.UseVisualStyleBackColor = true;
+            this.chkStartWithWindows.CheckedChanged += new System.EventHandler(this.chkStartWithWindows_CheckedChanged);
             // 
             // frmConfiguration
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(730, 349);
+            this.ClientSize = new System.Drawing.Size(730, 360);
             this.Controls.Add(this.btnSaveConfiguration);
             this.Controls.Add(this.grpAqua);
             this.Controls.Add(this.grpProgramConfig);
@@ -209,5 +222,6 @@
         private System.Windows.Forms.CheckBox chkSaveBeforeApply;
         private System.Windows.Forms.CheckBox chkApplyChangesAtStartup;
         private System.Windows.Forms.CheckBox chkStartMinimized;
+        private System.Windows.Forms.CheckBox chkStartWithWindows;
     }
 }

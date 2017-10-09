@@ -11,10 +11,15 @@ using System.Diagnostics;
 
 using System.Runtime.InteropServices;
 
+using Microsoft.Win32;
+
+
+
 namespace AquaFan
 {
     public class Controller
     {
+        
         [DllImport("user32.dll")]
         private static extern int ShowWindow(IntPtr hWnd, uint Msg);
         private const uint SW_RESTORE = 0x09;
@@ -32,7 +37,6 @@ namespace AquaFan
 
         private string sMessageHeader;
         private string sMessageContent;
-        private string sStartArguments = "";
 
 
         #region Properties
@@ -82,25 +86,6 @@ namespace AquaFan
             get { return statusStrip; }
             set { statusStrip = value; }
         }
-
-        //Aktuelles Menustrip
-        //private MenuStrip menuStripCurrent;
-
-        //public MenuStrip CurrentMenuStrip
-        //{
-        //    get { return menuStripCurrent; }
-        //    set { menuStripCurrent = value; }
-        //}
-
-        //Aktuell aktive Form
-        //private Form frmCurrent;
-
-        //public Form CurrentForm
-        //{
-        //    get { return frmCurrent; }
-        //    set { frmCurrent = value; }
-        //}
-
 
         //Liste mit allen Profilen (TabPages)
         BindingList<Profile> profiles;
@@ -170,13 +155,11 @@ namespace AquaFan
         {
             lblStatus = _lblStatus;
             statusStrip = _statusStrip;
-            //menuStripCurrent = _menuStrip;
-            //frmCurrent = _frmMain;
             btnAcceptFrmMain = acceptButton;
             ProfileTabControl = tbCntrl;
 
             //Config Dateien prüfen
-            MissingFileController fileCheck = new MissingFileController();
+            MissingFileController fileCheck = new MissingFileController(this);
 
             //Controller Objekte instanziieren
             xmlCntrl = new xmlController(this);
@@ -184,30 +167,52 @@ namespace AquaFan
 
             XmlControllerObject.DeviceSerial();
 
-            setStatus();
+            SetStatus();
 
             //Lüfter Werte ändern sobald ein Profil aktiviert wird (True = Lüfter werden sofort übernommen, False = man muss auf "Übernehmen" klicken
             bApplyChangesWhenChangingProfile = XmlControllerObject.changeFanSpeedsByChangingProfile;
 
-            loadProfiles();
-            //showProfiles();
+            LoadProfiles();
 
             if (XmlControllerObject.ApplyValuesAtProgramStart)
             {
-                applyCurrentProfileChanges();
+                ApplyCurrentProfileChanges();
             }
+        }        
 
+        public void SetStartWithWindows(bool autostart)
+        {
+            RegistryKey registryKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
 
+            if(autostart & StartWithWindowsEnabled() != true)
+            {
+                registryKey.SetValue("Aquafan", Application.ExecutablePath);
+            }
+            else if(!autostart)
+            {
+                registryKey.DeleteValue("Aquafan", false);
+            }            
+        }
+
+        public bool StartWithWindowsEnabled()
+        {
+            return Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", false).GetValue("Aquafan") != null;
+        }
+
+        public string GetApplicationPath()
+        {
+            string x = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", false).GetValue("Aquafan").ToString();
+            return Path.GetDirectoryName(x);
         }
 
         /// <summary>
         /// Setzt den Statustext auf der Hauptform
         /// </summary>
-        public void setStatus()
+        public void SetStatus()
         {
             if (!XmlControllerObject.checkCmdPath)
             {
-                lblStatus.Text = lngCntrl.getVariableText(lngCntrl.CurrentLanguage, "varCmdNotOK").Trim();
+                lblStatus.Text = lngCntrl.GetVariableText(lngCntrl.CurrentLanguage, "varCmdNotOK").Trim();
                 statusStrip.BackColor = Color.Orange;
                 btnAcceptFrmMain.Enabled = false;
                 return;
@@ -215,14 +220,14 @@ namespace AquaFan
 
             if (string.IsNullOrEmpty(DeviceSerial))
             {
-                lblStatus.Text += " " + lngCntrl.getVariableText(lngCntrl.CurrentLanguage, "varSerialNotOK").Trim();
+                lblStatus.Text += " " + lngCntrl.GetVariableText(lngCntrl.CurrentLanguage, "varSerialNotOK").Trim();
                 statusStrip.BackColor = Color.Orange;
                 btnAcceptFrmMain.Enabled = false;
                 return;
             }
             else
             {
-                lblStatus.Text = lngCntrl.getVariableText(lngCntrl.CurrentLanguage, "varCmdOK");
+                lblStatus.Text = lngCntrl.GetVariableText(lngCntrl.CurrentLanguage, "varCmdOK");
                 statusStrip.BackColor = Color.LightGreen;
                 btnAcceptFrmMain.Enabled = true;
             }
@@ -233,7 +238,7 @@ namespace AquaFan
         /// <summary>
         /// Form zum setzen des Pfades des AquaComputerCmd.exe und der Standardsprache
         /// </summary>
-        public void configureBaseSettings()
+        public void ConfigureBaseSettings()
         {
             if (frmConfig == null)
             {
@@ -249,15 +254,15 @@ namespace AquaFan
         /// </summary>
         /// <param name="currentSelectedPath"></param>
         /// <returns></returns>
-        public string setAquacomputerCmdPath(string currentSelectedPath)
+        public string SetAquacomputerCMDPath(string currentSelectedPath)
         {
             if (ofd == null)
             {
                 ofd = new OpenFileDialog();
             }
 
-            ofd.Title = LanguageControllerObject.getVariableText(LanguageControllerObject.CurrentLanguage, "varOpenFileDialogTitle");
-            ofd.Filter = LanguageControllerObject.getVariableText(LanguageControllerObject.CurrentLanguage, "varOpenFileDialogFilter");
+            ofd.Title = LanguageControllerObject.GetVariableText(LanguageControllerObject.CurrentLanguage, "varOpenFileDialogTitle");
+            ofd.Filter = LanguageControllerObject.GetVariableText(LanguageControllerObject.CurrentLanguage, "varOpenFileDialogFilter");
 
             ofd.ShowDialog();
 
@@ -266,8 +271,8 @@ namespace AquaFan
                 return ofd.FileName;
             }
 
-            sMessageHeader = LanguageControllerObject.getVariableText(LanguageControllerObject.CurrentLanguage, "varMessageHeader");
-            sMessageContent = LanguageControllerObject.getVariableText(LanguageControllerObject.CurrentLanguage, "varCmdNotExist");
+            sMessageHeader = LanguageControllerObject.GetVariableText(LanguageControllerObject.CurrentLanguage, "varMessageHeader");
+            sMessageContent = LanguageControllerObject.GetVariableText(LanguageControllerObject.CurrentLanguage, "varCmdNotExist");
 
             MessageBox.Show(sMessageContent, sMessageHeader, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 
@@ -278,7 +283,7 @@ namespace AquaFan
         /// Gibt eine Liste mit 12 Fans zurück
         /// </summary>
         /// <returns></returns>
-        public BindingList<fan> generateFans()
+        public BindingList<fan> GenerateFans()
         {
             lGenerateFans = new BindingList<fan>();
 
@@ -298,7 +303,7 @@ namespace AquaFan
         /// Lädt alle Profile
         /// </summary>
         /// <returns></returns>
-        public BindingList<Profile> loadProfiles()
+        public BindingList<Profile> LoadProfiles()
         {
             profiles = xmlCntrl.loadProfiles();
             return profiles;
@@ -309,15 +314,15 @@ namespace AquaFan
         /// </summary>
         /// <param name="speedValue"></param>
         /// <returns></returns>
-        public string getCurrentSpeedText(int speedValue)
+        public string GetCurrentSpeedText(int speedValue)
         {
-            return LanguageControllerObject.getVariableText(LanguageControllerObject.CurrentLanguage, "lblCurrentDescription").Replace("[]", speedValue.ToString());
+            return LanguageControllerObject.GetVariableText(LanguageControllerObject.CurrentLanguage, "lblCurrentDescription").Replace("[]", speedValue.ToString());
         }
 
         /// <summary>
         /// Speichert das aktive Profil
         /// </summary>
-        public void saveActiveProfile()
+        public void SaveActiveProfile()
         {
             BindingList<Profile> lProfilesToDelete = new BindingList<Profile>();
 
@@ -339,16 +344,16 @@ namespace AquaFan
             foreach (Profile p in lProfilesToDelete)
             {
                 Profiles.Remove(p);
-                showProfiles();
+                ShowProfiles();
             }
 
-            checkForActiveProfile();
+            CheckForActiveProfile();
         }
 
         /// <summary>
         /// Speichert alle Profile
         /// </summary>
-        public void saveAllProfiles()
+        public void SaveAllProfiles()
         {
             BindingList<Profile> lProfilesToDelete = new BindingList<Profile>();
             foreach (Profile p in Profiles)
@@ -370,7 +375,7 @@ namespace AquaFan
                 Profiles.Remove(p);
             }
 
-            checkForActiveProfile();
+            CheckForActiveProfile();
         }
 
         private Process pApplyChanges = new Process();
@@ -380,7 +385,7 @@ namespace AquaFan
         /// <summary>
         /// Aktiviert die Lüftereinstellungen
         /// </summary>
-        public void applyCurrentProfileChanges()
+        public void ApplyCurrentProfileChanges()
         {
             if (CurrentProfile == null || CurrentProfile.ProfileFans == null) { return; }
             if (!File.Exists(xmlCntrl.CmdPath)) { return; }
@@ -394,17 +399,17 @@ namespace AquaFan
             //Wenn der Startboost aktiviert ist, muessen ersteinmal alle Luefter auf 100% gestellt werden
             if (CurrentProfile.StartBoost)
             {
-                applyFanSpeeds(getStartArguments(false));
-                tStartBoost = new System.Threading.Thread(applyFanSettingsDelayed);
+                ApplyFanSpeeds(GetStartArguments(false));
+                tStartBoost = new System.Threading.Thread(ApplyFanSettingsDelayed);
                 tStartBoost.Start();
             }
             else
             {
-                applyFanSpeeds(getStartArguments(true));
+                ApplyFanSpeeds(GetStartArguments(true));
             }
         }
 
-        private void applyFanSettingsDelayed()
+        private void ApplyFanSettingsDelayed()
         {
             tStartBoostTimer.Interval = 2500;
             tStartBoostTimer.Start();
@@ -415,7 +420,7 @@ namespace AquaFan
         /// </summary>
         /// <param name="bCurrent"></param>
         /// <returns></returns>
-        private string getStartArguments(bool bCurrent)
+        private string GetStartArguments(bool bCurrent)
         {
             string sReturnArguments = "";
             foreach (fan f in CurrentProfile.ProfileFans)
@@ -437,7 +442,7 @@ namespace AquaFan
         private void TStartBoostTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             //Nachdem der StartBoost Timer 1 mal getickt hat, muessen die richtigen Werte des Profils uebernommen werden
-            applyFanSpeeds(getStartArguments(true));
+            ApplyFanSpeeds(GetStartArguments(true));
 
             //Danach den Timer einfach stoppen
             ((System.Timers.Timer)sender).Stop();
@@ -450,7 +455,7 @@ namespace AquaFan
         /// Aktivierte die übergebenen Geschwindigkeiten für die Lüfter
         /// </summary>
         /// <param name="startArguments"></param>
-        private void applyFanSpeeds(string startArguments)
+        private void ApplyFanSpeeds(string startArguments)
         {
             //iProcessCounter++;
             pSetFanSpeeds = new Process();
@@ -478,7 +483,7 @@ namespace AquaFan
             {
                 tTest.Elapsed -= TTest_Elapsed;
                 tTest.Elapsed += TTest_Elapsed;
-                lblStatus.Text = lngCntrl.getVariableText(lngCntrl.CurrentLanguage, "varFanSpeedSet");
+                lblStatus.Text = lngCntrl.GetVariableText(lngCntrl.CurrentLanguage, "varFanSpeedSet");
                 statusStrip.BackColor = Color.LightGreen;
                 btnAcceptFrmMain.Enabled = true;
                 tTest.Start();
@@ -487,7 +492,7 @@ namespace AquaFan
 
         private void TTest_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            lblStatus.Text = lngCntrl.getVariableText(lngCntrl.CurrentLanguage, "");
+            lblStatus.Text = lngCntrl.GetVariableText(lngCntrl.CurrentLanguage, "");
             statusStrip.BackColor = Color.LightGreen;
             btnAcceptFrmMain.Enabled = true;
             tTest.Stop();
@@ -496,7 +501,7 @@ namespace AquaFan
         /// <summary>
         /// Erstellt ein leeres Profil
         /// </summary>
-        public bool createDefaultProfile()
+        public bool CreateDefaultProfile()
         {
             foreach (Profile p in Profiles)
             {
@@ -534,9 +539,9 @@ namespace AquaFan
             }
 
             Profile newProfile = new Profile(newProfileForm.ProfileName, this);
-            newProfile.ProfileFans = generateFans();
+            newProfile.ProfileFans = GenerateFans();
             newProfile.ProfileCurrentFan = newProfile.ProfileFans[0];
-            newProfile.ProfileLabel.Text = getCurrentSpeedText(newProfile.ProfileCurrentFan.SpeedPercentage);
+            newProfile.ProfileLabel.Text = GetCurrentSpeedText(newProfile.ProfileCurrentFan.SpeedPercentage);
             newProfile.ProfileIsCreated = true;
             iFileNameCounter++;
             newProfile.ProfilePath = "FanProfiles\\" + DateTime.Now.Date.ToShortDateString() + "_" + iFileNameCounter.ToString() + ".xml";
@@ -544,12 +549,12 @@ namespace AquaFan
             Profiles.Add(newProfile);
             bActiveProfileExists = false;
 
-            checkForActiveProfile();
+            CheckForActiveProfile();
 
             return true;
         }
 
-        private void checkForActiveProfile()
+        private void CheckForActiveProfile()
         {
             foreach (Profile p in Profiles)
             {
@@ -572,17 +577,17 @@ namespace AquaFan
             }
         }
 
-        public void createFanProfile(Form f, MenuStrip menu)
+        public void CreateFanProfile(Form f, MenuStrip menu)
         {
-            createDefaultProfile();
-            showProfiles();
-            reloadCurrentLanguage(f, menu);
+            CreateDefaultProfile();
+            ShowProfiles();
+            ReloadCurrentLanguage(f, menu);
         }
 
         /// <summary>
         /// Zeigt alle Profile in der Profiles-Liste an
         /// </summary>
-        public void showProfiles()
+        public void ShowProfiles()
         {
             pAddTabProfile = null;
             profileControl.TabPages.Clear();
@@ -609,7 +614,7 @@ namespace AquaFan
                     if (p.ProfileComboBox.SelectedIndex == -1)
                     {
                         p.ProfileComboBox.SelectedIndex = 0;
-                        p.ProfileLabel.Text = getCurrentSpeedText(p.ProfileCurrentFan.SpeedPercentage);
+                        p.ProfileLabel.Text = GetCurrentSpeedText(p.ProfileCurrentFan.SpeedPercentage);
                     }
 
                     profileControl.Controls.Add(p);
@@ -625,7 +630,6 @@ namespace AquaFan
                     //Aktives Profil setzen
                     if (p.IsActiveProfile)
                     {
-                        //profileControl.SelectedTab = p;
                         btnAcceptFrmMain.Enabled = p.IsActiveProfile;
                         p.ProfileRadioButton.Checked = true;
                     }
@@ -636,23 +640,19 @@ namespace AquaFan
                     }
                 }
             }
-
-            //Sprache aendern nachdem alle Controls hinzugefuegt wurden
-            //LanguageControllerObject.collectControls(null, menuStripCurrent);
-            //LanguageControllerObject.changeLanguage(LanguageControllerObject.CurrentLanguage);
         }
 
-        public void reloadCurrentLanguage(Form f, MenuStrip menu)
+        public void ReloadCurrentLanguage(Form f, MenuStrip menu)
         {
             //Sprache aendern nachdem alle Controls hinzugefuegt wurden
-            LanguageControllerObject.collectControls(f, menu);
-            LanguageControllerObject.changeLanguage(LanguageControllerObject.CurrentLanguage);
+            LanguageControllerObject.CollectControls(f, menu);
+            LanguageControllerObject.ChangeLanguage(LanguageControllerObject.CurrentLanguage);
         }
 
         /// <summary>
         /// Fenster zum Profilnamen ändern öffnen
         /// </summary>
-        public void changeProfileName()
+        public void ChangeProfileName()
         {
             fChangeProfileName = new frmChangeProfileName(this, CurrentProfile.Text);
             DialogResult dr = fChangeProfileName.ShowDialog();
@@ -666,7 +666,7 @@ namespace AquaFan
         /// Aktiviert das übergebene Profil
         /// </summary>
         /// <param name="profileToActivate"></param>
-        public void activateProfile(Profile profileToActivate)
+        public void ActivateProfile(Profile profileToActivate)
         {
             foreach (Profile profile in Profiles)
             {
@@ -685,15 +685,15 @@ namespace AquaFan
 
             if (XmlControllerObject.changeFanSpeedsByChangingProfile)
             {
-                saveActiveProfile();
-                applyCurrentProfileChanges();
+                SaveActiveProfile();
+                ApplyCurrentProfileChanges();
             }
         }
 
         /// <summary>
         /// Resized die aktuelle Form auf den Normal State
         /// </summary>
-        public void restoreFormSize(Form frm)
+        public void RestoreFormSize(Form frm)
         {
             if (frm.WindowState == FormWindowState.Normal | frm.WindowState == FormWindowState.Minimized)
             {
@@ -702,7 +702,6 @@ namespace AquaFan
                 if (frm.WindowState == FormWindowState.Minimized)
                 {
                     ShowWindow(frm.Handle, SW_RESTORE);
-
                 }
             }
         }

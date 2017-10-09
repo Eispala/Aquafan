@@ -36,16 +36,18 @@ namespace AquaFan
                 WindowState = FormWindowState.Normal;
             }
 
-            cntrl.showProfiles();
-            cntrl.reloadCurrentLanguage(this, menuStrip1);
+            cntrl.ShowProfiles();
+            cntrl.ReloadCurrentLanguage(this, menuStrip1);
             cntrl.LanguageControllerObject.LanguageChanged += LanguageControllerObject_LanguageChanged;
+
+            tabProfiles.SelectedTab = cntrl.CurrentProfile;
         }
 
         private void LanguageControllerObject_LanguageChanged(string sChosenLanguage)
         {
             cntrl.LanguageControllerObject.CurrentLanguage = sChosenLanguage;
-            cntrl.reloadCurrentLanguage(this, menuStrip1);
-            cntrl.setStatus();
+            cntrl.ReloadCurrentLanguage(this, menuStrip1);
+            cntrl.SetStatus();
         }
 
         private void ProfilePage_Click(object sender, EventArgs e)
@@ -55,13 +57,13 @@ namespace AquaFan
 
         private void tBtnConfiguration_Click(object sender, EventArgs e)
         {
-            cntrl.configureBaseSettings();
+            cntrl.ConfigureBaseSettings();
         }
 
         private void btnAccept_Click(object sender, EventArgs e)
         {
-            cntrl.saveActiveProfile();
-            cntrl.applyCurrentProfileChanges();
+            cntrl.SaveActiveProfile();
+            cntrl.ApplyCurrentProfileChanges();
         }
 
         private void tbFanDescription_TextChanged(object sender, EventArgs e)
@@ -79,14 +81,17 @@ namespace AquaFan
             if(((Profile)((TabControl)sender).TabPages[((TabControl)sender).SelectedIndex]).IsAddProfileTab)
             {
 
-                cntrl.createFanProfile(this, menuStrip1);
+                cntrl.CreateFanProfile(this, menuStrip1);
 
             }
             else
             {
                 if(((TabControl)sender).TabPages[((TabControl)sender).SelectedIndex] is Profile)
                 {
-                    cntrl.CurrentProfile = (Profile)((TabControl)sender).TabPages[((TabControl)sender).SelectedIndex];
+                    Profile p = (Profile)((TabControl)sender).TabPages[((TabControl)sender).SelectedIndex];
+                    if (p.IsActiveProfile)
+                        cntrl.CurrentProfile = p;
+
                     btnAccept.Enabled = cntrl.CurrentProfile.IsActiveProfile;
                 }
             }
@@ -94,28 +99,26 @@ namespace AquaFan
 
         private void btnSaveCurrentProfile_Click(object sender, EventArgs e)
         {
-            cntrl.saveActiveProfile();
+            cntrl.SaveActiveProfile();
         }
 
         private void btnSaveAllProfiles_Click(object sender, EventArgs e)
         {
-            cntrl.saveAllProfiles();
-            cntrl.loadProfiles();
-            cntrl.showProfiles();
-            cntrl.reloadCurrentLanguage(this, menuStrip1);
-            //cntrl.LanguageControllerObject.collectControls(this, menuStrip1);
-            //cntrl.LanguageControllerObject.changeLanguage(cntrl.LanguageControllerObject.CurrentLanguage);
+            cntrl.SaveAllProfiles();
+            cntrl.LoadProfiles();
+            cntrl.ShowProfiles();
+            cntrl.ReloadCurrentLanguage(this, menuStrip1);
         }        
 
         private void btnCreateProfile_Click(object sender, EventArgs e)
         {
-            cntrl.createFanProfile(this, menuStrip1);
+            cntrl.CreateFanProfile(this, menuStrip1);
         }
 
         private void tabPage1_Click(object sender, EventArgs e)
         {
 
-            cntrl.createFanProfile(this, menuStrip1);
+            cntrl.CreateFanProfile(this, menuStrip1);
 
         }
 
@@ -124,13 +127,13 @@ namespace AquaFan
             switch(keyData)
             {
                 case Keys.Control | Keys.T:
-                    cntrl.createFanProfile(this, menuStrip1);
+                    cntrl.CreateFanProfile(this, menuStrip1);
 
                     return true;
                 case Keys.Control | Keys.S:
-                    cntrl.saveAllProfiles();
-                    cntrl.loadProfiles();
-                    cntrl.showProfiles();
+                    cntrl.SaveAllProfiles();
+                    cntrl.LoadProfiles();
+                    cntrl.ShowProfiles();
                     return true;
 
             }
@@ -140,11 +143,6 @@ namespace AquaFan
         private void frmMain_SizeChanged(object sender, EventArgs e)
         {
             btnAccept.Location = new Point(tabProfiles.Location.X + tabProfiles.Width - btnAccept.Width, tabProfiles.Location.Y + tabProfiles.Height + 6);
-        }
-
-        private void cmsChangeProfileName_Click(object sender, EventArgs e)
-        {
-
         }
 
         bool bDoubleClickedAddProfileTab = false;
@@ -173,11 +171,8 @@ namespace AquaFan
             }
             if (bDoubleClickedAddProfileTab) { return; }
             
-            cntrl.changeProfileName();
-            //cntrl.CurrentForm = this;
-            cntrl.reloadCurrentLanguage(this, menuStrip1);
-            //cntrl.LanguageControllerObject.collectControls(this, menuStrip1);
-            //cntrl.LanguageControllerObject.changeLanguage(cntrl.LanguageControllerObject.CurrentLanguage);
+            cntrl.ChangeProfileName();
+            cntrl.ReloadCurrentLanguage(this, menuStrip1);
 
         }
 
@@ -227,19 +222,19 @@ namespace AquaFan
             {
                 if(p.Text == ((ToolStripMenuItem)sender).Text & !p.DeleteProfile &!p.IsAddProfileTab)
                 {
-                    cntrl.activateProfile(p);
+                    cntrl.ActivateProfile(p);
                     bChangedProfile = true;
                 }
             }
 
             if(bChangedProfile)
             {
-                cntrl.saveActiveProfile();
-                cntrl.applyCurrentProfileChanges();
+                cntrl.SaveActiveProfile();
+                cntrl.ApplyCurrentProfileChanges();
             }
         }
 
-        private void icon_Click(object sender, EventArgs e)
+        private void Icon_Click(object sender, EventArgs e)
         {
             cmRightClick.Items.Clear();
 
@@ -256,16 +251,15 @@ namespace AquaFan
                 }
             }
             cmRightClick.Items.Add("-");
-            cmRightClick.Items.Add(cntrl.LanguageControllerObject.getVariableText(cntrl.LanguageControllerObject.CurrentLanguage, "tBtnResize"));
-            cmRightClick.Items.Add(cntrl.LanguageControllerObject.getVariableText(cntrl.LanguageControllerObject.CurrentLanguage, "tBtnClose"));
+            cmRightClick.Items.Add(cntrl.LanguageControllerObject.GetVariableText(cntrl.LanguageControllerObject.CurrentLanguage, "tBtnResize"));
+            cmRightClick.Items.Add(cntrl.LanguageControllerObject.GetVariableText(cntrl.LanguageControllerObject.CurrentLanguage, "tBtnClose"));
             cmRightClick.Items[cmRightClick.Items.Count - 1].Click += NotifyIconCloseClick;
             cmRightClick.Items[cmRightClick.Items.Count - 2].Click += NotifyIconResizeClick;
         }
 
         private void NotifyIconResizeClick(object sender, EventArgs e)
         {
-            //cntrl.CurrentForm = this;
-            cntrl.restoreFormSize(this);
+            cntrl.RestoreFormSize(this);
         }
 
         private void NotifyIconCloseClick(object sender, EventArgs e)
@@ -289,8 +283,7 @@ namespace AquaFan
 
         private void icon_DoubleClick(object sender, EventArgs e)
         {
-            //cntrl.CurrentForm = this;
-            cntrl.restoreFormSize(this);
+            cntrl.RestoreFormSize(this);
         }
 
         private void tabProfiles_Click(object sender, EventArgs e)
@@ -298,7 +291,7 @@ namespace AquaFan
             if(tabProfiles.TabPages.Count == 1)
             {
                 //Nur das Add-Profil ist vorhanden
-                cntrl.createFanProfile(this, menuStrip1);
+                cntrl.CreateFanProfile(this, menuStrip1);
             }
         }
 
